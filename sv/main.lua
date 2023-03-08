@@ -34,7 +34,6 @@ local adaptiveCard = {
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason, deferrals)
     deferrals.defer()
-    local card = LoadResourceFile(GetCurrentResourceName(), 'noWhitelist.json')
     local discordId = Whitelist:getPlayerDiscordId(source)
 
     if discordId == nil then deferrals.done(Config.Settings.lang.noDiscord) return end
