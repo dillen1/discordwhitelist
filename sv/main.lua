@@ -1,6 +1,40 @@
+local adaptiveCard = {
+    ['type'] = 'AdaptiveCard',
+    ['$schema'] = 'http://adaptivecards.io/schemas/adaptive-card.json',
+    ['version'] = '1.5',
+    ['body'] = {
+        {
+            ['type'] = 'Image',
+            ['$data'] = Config.Settings.card['image'],
+            ['url'] = Config.Settings.card['image'],
+            ['width'] = '100px',
+            ['height'] = '100px',
+            ['horizontalAlignment'] = 'center'
+        },
+        {
+            ['type'] = 'TextBlock',
+            ['fontType'] = 'Default',
+            ['size'] = 'Large',
+            ['horizontalAlignment'] = 'center',
+            ['text'] = Config.Settings.lang['notWhitelisted']
+        },
+        {
+            ['type'] = 'ActionSet',
+            ['actions'] = {
+                {
+                    ['type'] = 'Action.OpenUrl',
+                    ['url'] = Config.Settings.card.discordUrl,
+                    ['title'] =  Config.Settings.lang.joinDiscord,
+                }
+            },
+            ['horizontalAlignment'] = 'center'
+        }
+    }
+}
+
 AddEventHandler('playerConnecting', function(playerName, setKickReason, deferrals)
     deferrals.defer()
-
+    local card = LoadResourceFile(GetCurrentResourceName(), 'noWhitelist.json')
     local discordId = Whitelist:getPlayerDiscordId(source)
 
     if discordId == nil then deferrals.done(Config.Settings.lang.noDiscord) return end
@@ -16,7 +50,7 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason, deferral
                 end
             end
 
-            deferrals.done(Config.Settings.lang.notWhitelisted)
+            deferrals.presentCard(json.encode(adaptiveCard))
         end
     end, 'GET', '', { 
         ['Content-Type'] = 'application/json',
